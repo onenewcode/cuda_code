@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**"
+                // "/usr/local/cuda/include"  // 添加 CUDA 头文件路径
+            ],
+            "defines": [],
+            // "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "/usr/local/cuda/bin/nvcc", // 使用cuda编译器
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "linux-gcc-x64",
+            "configurationProvider": "ms-vscode.makefile-tools"
+        }
+    ],
+    "version": 4
+}

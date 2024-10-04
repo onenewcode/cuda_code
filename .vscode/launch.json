@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "CUDA C++: Launch",
+            "type": "cuda-gdb",
+            "request": "launch",
+            // ${fileDirname}: 当前打开的文件所在的目录。
+            // ${fileBasenameNoExtension}: 当前打开的文件的基本名称（不包括路径和扩展名）。
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "preLaunchTask": "build: current file",
+            "postDebugTask": "clean: delete compiled file"
+        }
+    ]
+}

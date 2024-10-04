@@ -1,27 +1,14 @@
 #include <cuda.h>
 #include <stdio.h>
-
-#include <Windows.h>
 // linux版本
-// #include <sys/time.h>
-// double get_walltime()
-// {
-//     struct timeval tp;
-//     gettimeofday(&tp, NULL);
-//     return (double)(tp.tv_sec + tp.tv_usec * 1e-6);
-// }
-
-// 用于计算运行时间 
+#include <sys/time.h>
 double get_walltime()
 {
-    FILETIME ft;
-    GetSystemTimeAsFileTime(&ft);
-
-    uint64_t time = ((uint64_t)ft.dwHighDateTime << 32) | ft.dwLowDateTime;
-    time -= 116444736000000000ULL; // Convert from 1601 to 1970 epoch
-
-    return (double)time / 10000000.0; // Convert to seconds
+    struct timeval tp;
+    gettimeofday(&tp, NULL);
+    return (double)(tp.tv_sec + tp.tv_usec * 1e-6);
 }
+
 void initCpu(float *hostA, float *hostB, int n)
 {
     for (int i = 0; i < n; i++)
