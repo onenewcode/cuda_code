@@ -34,6 +34,7 @@ __global__ void addKernel(float *deviceA, float *deviceB, float *deviceC, int n)
 }
 int main()
 {
+    // 初始化数组指针
     float *hostA, *hostB, *hostC, *serialC;
     int n = 102400;
 
@@ -50,20 +51,29 @@ int main()
     st = get_walltime();
 
     float *dA, *dB, *dC;
+    // 分配内存
     cudaMalloc((void **)&dA, n * sizeof(float));
     cudaMalloc((void **)&dB, n * sizeof(float));
     cudaMalloc((void **)&dC, n * sizeof(float));
-
+    // 内存复制
     cudaMemcpy(dA, hostA, n * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(dB, hostB, n * sizeof(float), cudaMemcpyHostToDevice);
+    // 定义两个 CUDA 事件对象 start 和 stop，用于记录内核执行的开始和结束时间。
     cudaEvent_t start, stop;
+    // 用于存储内核执行的时间
     float ker_time = 0;
+    // CUDA 事件对象
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
+    // 记录内核执行的开始时间。0 表示使用默认的流（即当前流
     cudaEventRecord(start, 0);
+    //  定义每个块的线程数为 1024。
     int BLOCK_DIM = 1024;
+    // 计算所需的块数。
     int num_block_x = n / BLOCK_DIM;
+    // 定义每个块在 y 方向上的线程数为 1
     int num_block_y = 1;
+    // grid_dim 是一个 dim3 对象，表示网格在 x、y 和 z 方向上的尺寸。
     dim3 grid_dim(num_block_x, num_block_y, 1);
     dim3 block_dim(BLOCK_DIM, 1, 1);
     addKernel<<<grid_dim, block_dim>>>(dA, dB, dC, n);
