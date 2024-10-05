@@ -17,9 +17,11 @@ float addCpu(float *hostA, int n)
     }
     return tmp;
 }
+// 使用模板可以让你在编译时指定块的大小
 template <int BLOCK_DIM>
 __global__ void addKernel(float *dA, int n, float *globalMax, int strategy)
 {
+    // 定义一个共享内存数组 tmpSum，每个块的线程都可以访问。
     __shared__ float tmpSum[BLOCK_DIM];
     float tmp = 0.0f;
     for (int id = threadIdx.x; id < n; id += BLOCK_DIM)
@@ -103,7 +105,7 @@ int main()
 {
     float *hostA;
     int n = 102400;
-    int strategy = 3;
+    int strategy = 2;
     int repeat = 100;
     hostA = (float *)malloc(n * sizeof(float));
     for (int i = 0; i < n; i++)
@@ -125,12 +127,13 @@ int main()
     cudaEventCreate(&stop);
     cudaEventRecord(start, 0);
     int BLOCK_DIM = 1024;
-    int num_block_x = n / BLOCK_DIM;
+    int num_block_x = (n+BLOCK_DIM-1) / BLOCK_DIM;
     int num_block_y = 1;
     dim3 grid_dim(num_block_x, num_block_y, 1);
     dim3 block_dim(BLOCK_DIM, 1, 1);
     for (int i = 0; i < repeat; i++)
     {
+        // <1024>: 模板参数，指定每个块的线程数为 102
         addKernel<1024><<<grid_dim, block_dim>>>(dA, n, globalMax, strategy);
     }
 
